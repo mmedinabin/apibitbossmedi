@@ -1,0 +1,37 @@
+import { getPosition, closePosition, openPosition } from '../binanceRest.js';
+import { sendTelegram } from '../telegram.js';
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Método no permitido' });
+  }
+
+  try {
+    const payload = req.body;
+
+    if (!payload.symbol || !payload.side) {
+      return res.status(400).json({ error: 'symbol y side son requeridos' });
+    }
+
+    if (payload.symbol.endsWith('.P')) {
+      payload.symbol = payload.symbol.replace('.P', '');
+    }
+
+    payload.side = payload.side.toUpperCase();
+
+    const position = await getPosition(payload.symbol);
+
+    if (position && parseFloat(position.positionAmt) !== 0) {
+      await closePosition(position);
+      await new Promise((r) => setTimeout(r, 1500));
+    }
+
+    await openPosition(payload);
+    await sendTelegram(`✅ Orden ${payload.side} ejecutada para ${payload.symbol}`);
+
+    return res.status(200).json({ status: 'ok', message: 'Orden procesada' });
+  } catch (err) {
+    await sendTelegram(`❌ Error procesando orden: ${err.message}`);
+    return res.status(500).json({ status: 'error', message: err.message });
+  }
+}
