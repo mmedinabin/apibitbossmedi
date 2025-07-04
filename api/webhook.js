@@ -27,11 +27,20 @@ export default async function handler(req, res) {
     }
 
     await openPosition(payload);
-    await sendTelegram(`✅ Orden ${payload.side} ejecutada para ${payload.symbol}`);
+
+    try {
+      await sendTelegram(`✅ Orden ${payload.side} ejecutada para ${payload.symbol}`);
+    } catch (err) {
+      console.error('⚠️ Error al enviar mensaje a Telegram:', err.message);
+    }
 
     return res.status(200).json({ status: 'ok', message: 'Orden procesada' });
   } catch (err) {
-    await sendTelegram(`❌ Error procesando orden: ${err.message}`);
+    try {
+      await sendTelegram(`❌ Error procesando orden: ${err.message}`);
+    } catch (e) {
+      console.error('⚠️ No se pudo notificar el error a Telegram:', e.message);
+    }
     return res.status(500).json({ status: 'error', message: err.message });
   }
 }
