@@ -1,6 +1,6 @@
 import axios from 'axios';
 import crypto from 'crypto';
-import STEP_SIZES from './stepSizes.json' assert { type: 'json' };
+const STEP_SIZES = './stepSizes.json';
 
 const API_KEY = process.env.BINANCE_API_KEY;
 const API_SECRET = process.env.BINANCE_API_SECRET;
