@@ -35,7 +35,7 @@ export async function closePosition(position) {
   });
 }
 
-export async function openPosition({ symbol, side, quantity = 3 }) {
+export async function openPosition({ symbol, side, quantity }) {
   const price = await getPrice(symbol);
   const stepSize = STEP_SIZES[symbol] || 0.01;
   const roundedQty = (quantity / price).toFixed(countDecimals(stepSize));
