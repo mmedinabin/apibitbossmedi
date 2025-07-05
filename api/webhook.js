@@ -39,8 +39,8 @@ export default async function handler(req, res) {
     return res.status(200).json({ status: 'ok', message: 'Orden procesada' });
   } catch (err) {
     try {
-      await sendTelegram(`✅ Orden ${payload.side} ejecutada para ${payload.symbol}`);
-      await sendTelegram(`❌ Error procesando orden: ${err.message}`);
+      await sendTelegram(`✅ Errr Orden ${payload.side} ejecutada para ${payload.symbol}`);
+      //await sendTelegram(`❌ Error procesando orden: ${err.message}`);
     } catch (e) {
       console.error('⚠️ No se pudo notificar el error a Telegram:', e.message);
     }
