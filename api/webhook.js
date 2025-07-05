@@ -8,8 +8,10 @@ export default async function handler(req, res) {
 
   try {
     const payload = req.body;
+    console.log("Json Payload", payload);
 
     if (!payload.symbol || !payload.side) {
+      await sendTelegram(`✅ Orden ${payload.side} ejecutada para ${payload.symbol}`);
       return res.status(400).json({ error: 'symbol y side son requeridos' });
     }
 
